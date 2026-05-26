@@ -4,7 +4,7 @@ const zohoService = require('../services/zohoService');
 
 // Removed sampleImages array as we want real data or null
 // Utility to extract custom fields easily
-const formatProduct = (item) => {
+const formatProduct = (item, baseUrl) => {
   let securityDeposit = 0;
   let deliveryCharges = 0;
 
@@ -23,10 +23,10 @@ const formatProduct = (item) => {
   let imageUrls = [];
 
   if (item.image_name) {
-    imageUrl = `http://localhost:5000/api/products/${item.item_id}/image`;
+    imageUrl = `${baseUrl}/api/products/${item.item_id}/image`;
     
     if (item.documents && item.documents.length > 0) {
-      imageUrls = item.documents.map(doc => `http://localhost:5000/api/products/${item.item_id}/image?document_id=${doc.document_id}`);
+      imageUrls = item.documents.map(doc => `${baseUrl}/api/products/${item.item_id}/image?document_id=${doc.document_id}`);
     } else {
       imageUrls = [imageUrl];
     }
@@ -52,8 +52,9 @@ const formatProduct = (item) => {
 // GET /api/products
 router.get('/', async (req, res) => {
   try {
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
     const items = await zohoService.getItems();
-    const formattedProducts = items.map(formatProduct);
+    const formattedProducts = items.map(item => formatProduct(item, baseUrl));
     res.json(formattedProducts);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch products' });
@@ -87,11 +88,12 @@ router.get('/:id/image', async (req, res) => {
 // GET /api/products/:id
 router.get('/:id', async (req, res) => {
   try {
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
     const item = await zohoService.getItemById(req.params.id);
     if (!item) {
       return res.status(404).json({ error: 'Product not found' });
     }
-    const formattedProduct = formatProduct(item);
+    const formattedProduct = formatProduct(item, baseUrl);
     res.json(formattedProduct);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch product details' });
