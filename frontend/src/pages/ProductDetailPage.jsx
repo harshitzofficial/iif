@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Package, ArrowLeft, ShoppingCart, ChevronLeft, ChevronRight } from 'lucide-react';
 import API_URL from '../config';
+import { addToCart } from '../utils/cartStore';
 
 export default function ProductDetailPage() {
   const { id } = useParams();
@@ -29,21 +30,12 @@ export default function ProductDetailPage() {
       });
   }, [id]);
 
-  const addToCart = async () => {
+  const handleAddToCart = () => {
     setAdding(true);
-    try {
-      await fetch(`${API_URL}/cart`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productId: product.id, quantity: 1 })
-      });
-      // Dispatch custom event to update navbar cart count
-      window.dispatchEvent(new Event('cartUpdated'));
+    setTimeout(() => {
+      addToCart(product, 1);
       navigate('/cart');
-    } catch (error) {
-      console.error('Failed to add to cart', error);
-      setAdding(false);
-    }
+    }, 300);
   };
 
   const handlePrevImage = () => {
@@ -171,7 +163,7 @@ export default function ProductDetailPage() {
 
           <button 
             className="btn-primary add-to-cart-btn" 
-            onClick={addToCart}
+            onClick={handleAddToCart}
             disabled={adding}
             style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}
           >

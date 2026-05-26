@@ -2,54 +2,35 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Trash2, Plus, Minus, Package, ShoppingBag, ShoppingCart, CreditCard, ArrowRight } from 'lucide-react';
 import API_URL from '../config';
+import { getCartItems, getCartTotals, updateQuantity as updateCartQuantity, removeFromCart as removeCartItem } from '../utils/cartStore';
 
 export default function CartPage() {
   const [cartData, setCartData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchCart = async () => {
-    try {
-      const res = await fetch(`${API_URL}/cart`);
-      const data = await res.json();
-      setCartData(data);
-      setLoading(false);
-    } catch (error) {
-      console.error('Failed to fetch cart', error);
-      setLoading(false);
-    }
+  const fetchCart = () => {
+    setCartData({
+      items: getCartItems(),
+      totals: getCartTotals()
+    });
+    setLoading(false);
   };
 
   useEffect(() => {
     fetchCart();
   }, []);
 
-  const updateQuantity = async (productId, currentQty, delta) => {
+  const updateQuantity = (productId, currentQty, delta) => {
     const newQty = currentQty + delta;
     if (newQty < 1) return;
     
-    try {
-      await fetch(`${API_URL}/cart/${productId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ quantity: newQty })
-      });
-      fetchCart();
-      window.dispatchEvent(new Event('cartUpdated'));
-    } catch (error) {
-      console.error('Failed to update quantity', error);
-    }
+    updateCartQuantity(productId, newQty);
+    fetchCart();
   };
 
-  const removeItem = async (productId) => {
-    try {
-      await fetch(`${API_URL}/cart/${productId}`, {
-        method: 'DELETE'
-      });
-      fetchCart();
-      window.dispatchEvent(new Event('cartUpdated'));
-    } catch (error) {
-      console.error('Failed to remove item', error);
-    }
+  const removeItem = (productId) => {
+    removeCartItem(productId);
+    fetchCart();
   };
 
   if (loading) {

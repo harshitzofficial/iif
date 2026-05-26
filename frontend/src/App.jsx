@@ -6,19 +6,15 @@ import ProductListingPage from './pages/ProductListingPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import CartPage from './pages/CartPage';
 import API_URL from './config';
+import { getCartItems } from './utils/cartStore';
 
 function App() {
   const [cartCount, setCartCount] = useState(0);
 
-  const fetchCartCount = async () => {
-    try {
-      const res = await fetch(`${API_URL}/cart`);
-      const data = await res.json();
-      const count = data.items.reduce((acc, item) => acc + item.quantity, 0);
-      setCartCount(count);
-    } catch (error) {
-      console.error('Failed to fetch cart count');
-    }
+  const fetchCartCount = () => {
+    const items = getCartItems();
+    const count = items.reduce((acc, item) => acc + item.quantity, 0);
+    setCartCount(count);
   };
 
   useEffect(() => {
