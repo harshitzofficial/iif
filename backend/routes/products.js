@@ -52,7 +52,8 @@ const formatProduct = (item, baseUrl) => {
 // GET /api/products
 router.get('/', async (req, res) => {
   try {
-    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    const host = req.get('host').replace(':443', '');
+    const baseUrl = `https://${host}`;
     const items = await zohoService.getItems();
     const formattedProducts = items.map(item => formatProduct(item, baseUrl));
     res.json(formattedProducts);
@@ -88,7 +89,8 @@ router.get('/:id/image', async (req, res) => {
 // GET /api/products/:id
 router.get('/:id', async (req, res) => {
   try {
-    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    const host = req.get('host').replace(':443', '');
+    const baseUrl = `https://${host}`;
     const item = await zohoService.getItemById(req.params.id);
     if (!item) {
       return res.status(404).json({ error: 'Product not found' });
