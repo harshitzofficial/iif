@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Package, ArrowLeft, ShoppingCart, ChevronLeft, ChevronRight } from 'lucide-react';
+import API_URL from '../config';
 
 export default function ProductDetailPage() {
   const { id } = useParams();
@@ -11,7 +12,7 @@ export default function ProductDetailPage() {
   const [selectedImage, setSelectedImage] = useState('');
 
   useEffect(() => {
-    fetch(`http://localhost:5000/api/products/${id}`)
+    fetch(`${API_URL}/products/${id}`)
       .then(res => res.json())
       .then(data => {
         setProduct(data);
@@ -31,7 +32,7 @@ export default function ProductDetailPage() {
   const addToCart = async () => {
     setAdding(true);
     try {
-      await fetch('http://localhost:5000/api/cart', {
+      await fetch(`${API_URL}/cart`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ productId: product.id, quantity: 1 })

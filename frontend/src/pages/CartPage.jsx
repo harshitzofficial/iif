@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Trash2, Plus, Minus, Package, ShoppingBag, ShoppingCart, CreditCard, ArrowRight } from 'lucide-react';
+import API_URL from '../config';
 
 export default function CartPage() {
   const [cartData, setCartData] = useState(null);
@@ -8,7 +9,7 @@ export default function CartPage() {
 
   const fetchCart = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/cart');
+      const res = await fetch(`${API_URL}/cart`);
       const data = await res.json();
       setCartData(data);
       setLoading(false);
@@ -27,7 +28,7 @@ export default function CartPage() {
     if (newQty < 1) return;
     
     try {
-      await fetch(`http://localhost:5000/api/cart/${productId}`, {
+      await fetch(`${API_URL}/cart/${productId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ quantity: newQty })
@@ -41,7 +42,7 @@ export default function CartPage() {
 
   const removeItem = async (productId) => {
     try {
-      await fetch(`http://localhost:5000/api/cart/${productId}`, {
+      await fetch(`${API_URL}/cart/${productId}`, {
         method: 'DELETE'
       });
       fetchCart();

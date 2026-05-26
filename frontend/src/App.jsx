@@ -5,13 +5,14 @@ import LandingPage from './pages/LandingPage';
 import ProductListingPage from './pages/ProductListingPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import CartPage from './pages/CartPage';
+import API_URL from './config';
 
 function App() {
   const [cartCount, setCartCount] = useState(0);
 
   const fetchCartCount = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/cart');
+      const res = await fetch(`${API_URL}/cart`);
       const data = await res.json();
       const count = data.items.reduce((acc, item) => acc + item.quantity, 0);
       setCartCount(count);

@@ -1,0 +1,9 @@
+{
+  "command": "npm start",
+  "buildPath": "C:\\Users\\Harshit\\Desktop\\RESUME PROJECTS\\IIF\\backend",
+  "stack": "node18",
+  "memory": 256,
+  "env_variables": {
+    "NODE_ENV": "production"
+  }
+}

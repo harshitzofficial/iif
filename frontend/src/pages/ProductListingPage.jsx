@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Package, Search, Sparkles, ArrowRight } from 'lucide-react';
+import API_URL from '../config';
 
 export default function ProductListingPage() {
   const [products, setProducts] = useState([]);
@@ -8,7 +9,7 @@ export default function ProductListingPage() {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/products')
+    fetch(`${API_URL}/products`)
       .then(res => res.json())
       .then(data => {
         setProducts(data);
